@@ -9,7 +9,7 @@ const client = new Client({
   channelAccessToken: config.LINE_ACCESS_TOKEN,
   channelSecret: config.LINE_CHANNEL_SECRET,
 });
-
+console.log('✅ webhook API 被觸發');
 export default defineEventHandler(async (event) => {
   const method = event.node.req.method;
   if (method !== 'POST') {
