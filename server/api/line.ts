@@ -16,6 +16,7 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event);
   console.log('📦 接收到 LINE webhook：', JSON.stringify(body, null, 2));
+  console.log(event);
 
   const signature = event.node.req.headers['x-line-signature'] || '';
   const valid = validateSignature(JSON.stringify(body), config.LINE_CHANNEL_SECRET, signature);
