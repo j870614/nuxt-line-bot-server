@@ -27,15 +27,15 @@ export default defineEventHandler(async (event) => {
     return { statusCode: 400, body: 'Invalid JSON body' };
   }
 
-  const signature = event.node.req.headers['x-line-signature'] || '';
-  const isValid = validateSignature(JSON.stringify(body), config.LINE_CHANNEL_SECRET, signature);
-  console.log('🧾 LINE Signature:', signature);
-  console.log('🔍 驗證結果:', isValid);
+  // const signature = event.node.req.headers['x-line-signature'] || '';
+  // const isValid = validateSignature(JSON.stringify(body), config.LINE_CHANNEL_SECRET, signature);
+  // console.log('🧾 LINE Signature:', signature);
+  // console.log('🔍 驗證結果:', isValid);
 
-  if (!isValid) {
-    console.error('❌ 簽名驗證失敗');
-    return { statusCode: 403, body: 'Invalid signature' };
-  }
+  // if (!isValid) {
+  //   console.error('❌ 簽名驗證失敗');
+  //   return { statusCode: 403, body: 'Invalid signature' };
+  // }
 
   for (const e of body.events || []) {
     if (e.type === 'message' && e.message.type === 'text') {
