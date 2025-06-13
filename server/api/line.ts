@@ -1,5 +1,3 @@
-export const runtime = 'edge';
-
 // server/api/line.ts
 // @ts-expect-error 使用已棄用的 Client
 import { defineEventHandler, readBody } from 'h3';
