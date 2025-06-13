@@ -1,4 +1,3 @@
-// server/api/line.ts
 import { defineEventHandler, readBody } from 'h3';
 import { Client, validateSignature } from '@line/bot-sdk';
 
@@ -10,14 +9,19 @@ const client = new Client({
 });
 
 export default defineEventHandler(async (event) => {
-  if (event.node.req.method !== 'POST') {
+  const method = event.node.req.method;
+  if (method !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   const body = await readBody(event);
-  const signature = event.node.req.headers['x-line-signature'] || '';
+  console.log('📦 接收到 LINE webhook：', JSON.stringify(body, null, 2));
 
-  if (!validateSignature(JSON.stringify(body), config.LINE_CHANNEL_SECRET, signature)) {
+  const signature = event.node.req.headers['x-line-signature'] || '';
+  const valid = validateSignature(JSON.stringify(body), config.LINE_CHANNEL_SECRET, signature);
+
+  if (!valid) {
+    console.error('❌ Signature 驗證失敗');
     return { statusCode: 403, body: 'Invalid signature' };
   }
 
@@ -25,13 +29,17 @@ export default defineEventHandler(async (event) => {
     if (e.type === 'message' && e.message.type === 'text') {
       const msg = e.message.text;
 
-      await client.replyMessage(e.replyToken, {
-        type: 'text',
-        text: `你說的是：「${msg}」`,
-      });
+      try {
+        await client.replyMessage(e.replyToken, {
+          type: 'text',
+          text: `你說的是：「${msg}」`,
+        });
+        console.log('✅ 已成功回覆 LINE');
+      } catch (err) {
+        console.error('❌ 回覆失敗', err);
+      }
     }
   }
 
   return { status: 'ok' };
 });
-
