@@ -38,6 +38,12 @@ export default defineEventHandler(async (event) => {
       } catch (err) {
         console.error('❌ 回覆失敗', err);
       }
+    } else {
+      // 非文字訊息回應
+      await client.replyMessage(e.replyToken, {
+        type: 'text',
+        text: `抱歉，目前只支援文字訊息(請不要包含表情符號或貼圖) 🙇‍♂️`,
+      });
     }
   }
 
