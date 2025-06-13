@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import { defineEventHandler, readBody } from 'h3';
 import { Client, validateSignature } from '@line/bot-sdk';
 
