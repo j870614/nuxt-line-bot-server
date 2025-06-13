@@ -18,11 +18,19 @@ export default defineEventHandler(async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const body = await readBody(event);
-  console.log('📦 接收到的資料：', JSON.stringify(body));
+  let body: any = {};
+  try {
+    body = await readBody(event);
+    console.log('📦 接收到的資料：', JSON.stringify(body, null, 2));
+  } catch (err) {
+    console.error('❌ 無法解析 body', err);
+    return { statusCode: 400, body: 'Invalid JSON body' };
+  }
 
   const signature = event.node.req.headers['x-line-signature'] || '';
   const isValid = validateSignature(JSON.stringify(body), config.LINE_CHANNEL_SECRET, signature);
+  console.log('🧾 LINE Signature:', signature);
+  console.log('🔍 驗證結果:', isValid);
 
   if (!isValid) {
     console.error('❌ 簽名驗證失敗');
@@ -32,6 +40,8 @@ export default defineEventHandler(async (event) => {
   for (const e of body.events || []) {
     if (e.type === 'message' && e.message.type === 'text') {
       const userMsg = e.message.text;
+      console.log('✉️ 收到文字訊息:', userMsg);
+
       try {
         await client.replyMessage(e.replyToken, {
           type: 'text',
@@ -39,13 +49,20 @@ export default defineEventHandler(async (event) => {
         });
         console.log('✅ 成功回覆使用者');
       } catch (err) {
-        console.error('❌ 回覆錯誤', err);
+        console.error('❌ 回覆訊息錯誤', err);
       }
+
     } else {
-      await client.replyMessage(e.replyToken, {
-        type: 'text',
-        text: `目前僅支援文字訊息（請不要傳貼圖、圖片或表情符號）🙇‍♂️`,
-      });
+      console.warn('⚠️ 收到非文字訊息，類型為：', e.message?.type || e.type || '未知');
+
+      try {
+        await client.replyMessage(e.replyToken, {
+          type: 'text',
+          text: `目前僅支援文字訊息（請不要傳貼圖、圖片或表情符號）🙇‍♂️`,
+        });
+      } catch (err) {
+        console.error('❌ 回覆非文字訊息錯誤', err);
+      }
     }
   }
 
