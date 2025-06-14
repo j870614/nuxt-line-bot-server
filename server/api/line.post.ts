@@ -55,12 +55,12 @@ export default defineEventHandler(async (event) => {
         return { ok: true };
       }
 
-      // 非關鍵字 → 回覆原訊息
-      await client.replyMessage(e.replyToken, {
-        type: 'text',
-        text: `你說的是：「${userMsg}」`,
-      });
-    }
+    //   // 非關鍵字 → 回覆原訊息
+    //   await client.replyMessage(e.replyToken, {
+    //     type: 'text',
+    //     text: `你說的是：「${userMsg}」`,
+    //   });
+    // }
   }
 
   return { ok: true };
