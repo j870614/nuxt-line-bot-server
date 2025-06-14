@@ -29,6 +29,7 @@ export default defineEventHandler(async (event) => {
   for (const e of body.events || []) {
     if (e.type === 'message' && e.message.type === 'text') {
       const userMsg = e.message.text.trim();
+      console.log('🎯 userMsg:', JSON.stringify(userMsg), '| includes:', userMsg.includes('查看今日太陽時間'));
       console.log('✉️ 收到文字訊息:', JSON.stringify(userMsg));
       console.log('🔍 includes 判斷:', userMsg.includes('查看今日太陽時間'));
 
