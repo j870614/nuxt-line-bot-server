@@ -1,12 +1,12 @@
 export const runtime = 'nodejs';
 
-import { defineEventHandler, useQuery } from 'h3';
+import { defineEventHandler, getQuery } from 'h3';
 import axios from 'axios';
 
 const API_BASE = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/A-B0062-001';
 
 export default defineEventHandler(async (event) => {
-  const { location } = useQuery(event);
+  const { location } = getQuery(event);
   const locName = location || '宜蘭縣';
   const today = new Date().toISOString().slice(0, 10);
 
