@@ -27,12 +27,40 @@ export default defineEventHandler(async (event) => {
     return { statusCode: 400, body: 'Invalid JSON body' };
   }
 
-
   for (const e of body.events || []) {
     if (e.type === 'message' && e.message.type === 'text') {
       const userMsg = e.message.text;
       console.log('✉️ 收到文字訊息:', userMsg);
 
+      // ✅ 判斷是否是觸發查看太陽時間的訊息
+      if (userMsg === '查看今日太陽時間') {
+        try {
+          const sun = await $fetch('/api/sun?location=臺北市');
+          if (sun.error) throw new Error(sun.error);
+
+          const replyText = `📍 今日 ${sun.location} 太陽時間：
+🌅 明相出：${sun['明相出']}
+🔆 過中天：${sun['過中天']}
+🌇 最後一道光：${sun['最後一道光']}`;
+
+
+          await client.replyMessage(e.replyToken, {
+            type: 'text',
+            text: replyText,
+          });
+          console.log('✅ 成功回覆太陽時間');
+          continue; // 中斷此次迴圈
+        } catch (err) {
+          console.error('❌ 查詢太陽時間失敗', err);
+          await client.replyMessage(e.replyToken, {
+            type: 'text',
+            text: '查詢太陽時間失敗，請稍後再試 ☀️',
+          });
+          continue;
+        }
+      }
+
+      // 🔁 一般文字訊息回覆
       try {
         await client.replyMessage(e.replyToken, {
           type: 'text',
@@ -44,6 +72,7 @@ export default defineEventHandler(async (event) => {
       }
 
     } else {
+      // 🖼️ 非文字訊息回覆
       console.warn('⚠️ 收到非文字訊息，類型為：', e.message?.type || e.type || '未知');
 
       try {
