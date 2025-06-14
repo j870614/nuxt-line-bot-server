@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     LINE_ACCESS_TOKEN: '',
     LINE_CHANNEL_SECRET: '',
     SUPABASE_SERVICE_ROLE_KEY: '',
+    CWA_API_KEY: '',
     public: {
       SUPABASE_URL: ''
     }
