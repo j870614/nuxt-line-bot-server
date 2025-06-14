@@ -35,7 +35,8 @@ export default defineEventHandler(async (event) => {
       // ✅ 判斷是否是觸發查看太陽時間的訊息
       if (userMsg === '查看今日太陽時間') {
         try {
-          const sun = await $fetch('/api/sun?location=臺北市');
+          console.log('🔍 正在查詢今日太陽時間中');
+          const sun = await event.$fetch('/api/sun?location=宜蘭縣');
           if (sun.error) throw new Error(sun.error);
 
           const replyText = `📍 今日 ${sun.location} 太陽時間：
