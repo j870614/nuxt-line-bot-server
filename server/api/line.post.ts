@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
       const userMsg = e.message.text.trim();
       console.log('✉️ 收到訊息:', JSON.stringify(userMsg));
 
-      if (userMsg.includes('查看今日太陽時間')) {
+      if (userMsg == '查看今日太陽時間') {
         // Step 1：立即回覆「查詢中」
         await client.replyMessage(e.replyToken, {
           type: 'text',
