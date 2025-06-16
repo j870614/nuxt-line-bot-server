@@ -23,23 +23,23 @@ export default defineEventHandler(async (event) => {
       console.log('👤 使用者 ID:', e.source.userId);
       console.log('🔍 是否符合: ', userMsg === '查看今日太陽時間');
       console.log('🔤 原始碼: ', [...userMsg].map(c => c.charCodeAt(0)));
-    
+
       if (userMsg === '查看今日太陽時間') {
         await client.replyMessage(e.replyToken, {
           type: 'text',
           text: '查詢中，資料取得後會主動推送 ☀️',
         });
         console.log('⏳ 已回覆查詢中訊息');
-    
+
         try {
           const sun = await event.$fetch('/api/sun?location=宜蘭縣');
           console.log('🌞 API 資料:', JSON.stringify(sun));
-    
+
           const replyText = `📍 今日 ${sun.location} 太陽時間：
-    🌅 明相出：${sun['明相出']}
-    🔆 過中天：${sun['過中天']}
-    🌇 最後一道光：${sun['最後一道光']}`;
-    
+🌅 明相出：${sun['明相出']}
+🔆 過中天：${sun['過中天']}
+🌇 最後一道光：${sun['最後一道光']}`;
+
           await client.pushMessage(e.source.userId, {
             type: 'text',
             text: replyText,
@@ -52,17 +52,17 @@ export default defineEventHandler(async (event) => {
             text: '查詢失敗，請稍後再試 ☀️',
           });
         }
-    
+
         return { ok: true };
       }
-    
+
       // fallback
       await client.replyMessage(e.replyToken, {
         type: 'text',
         text: `你說的是：「${userMsg}」`,
       });
     }
-    
+  }
 
   return { ok: true };
 });
