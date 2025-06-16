@@ -21,7 +21,8 @@ export default defineEventHandler(async (event) => {
       }
     });
 
-    // 進入記錄陣列
+    console.log('☀️ CWA API 回傳資料:', JSON.stringify(res.data, null, 2));
+
     const locations = res.data.records.locations.location;
     const todayEntry = locations.flatMap((l: any) => l.time || [])
       .find((t: any) => t.Date === today);
@@ -32,12 +33,12 @@ export default defineEventHandler(async (event) => {
 
     return {
       location: locName,
-      '民用曙光始（明相出）': todayEntry.BeginCivilTwilightTime,
-      '太陽過中天': todayEntry.SunTransitTime,
-      '民用暮光終（最後一道光）': todayEntry.EndCivilTwilightTime
+      明相出: todayEntry.BeginCivilTwilightTime,
+      過中天: todayEntry.SunTransitTime,
+      最後一道光: todayEntry.EndCivilTwilightTime
     };
   } catch (err) {
-    console.error('太陽時間查詢失敗', err);
+    console.error('❌ 太陽時間查詢失敗', err);
     return { error: '查詢失敗，請稍後再試' };
   }
 });
